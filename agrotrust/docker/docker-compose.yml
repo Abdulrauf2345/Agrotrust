@@ -1,0 +1,60 @@
+# Local development stack for the production target (PostgreSQL + PostGIS + Redis).
+# NOT run in the sandbox this project was developed in - authored against documented image
+# tags and standard compose syntax, not validated with a real `docker compose up` here.
+version: "3.9"
+
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      AGROTRUST_ENV: development
+      AGROTRUST_DATABASE_URL: postgresql://agrotrust:agrotrust@db:5432/agrotrust
+      AGROTRUST_REDIS_URL: redis://redis:6379/0
+      AGROTRUST_JWT_SECRET: dev-only-change-me-to-a-real-secret-0123456789
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  db:
+    image: postgis/postgis:15-3.4
+    environment:
+      POSTGRES_USER: agrotrust
+      POSTGRES_PASSWORD: agrotrust
+      POSTGRES_DB: agrotrust
+    volumes:
+      - agrotrust_pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agrotrust"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  worker:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    command: ["arq", "agrotrust.workers.arq_settings.WorkerSettings"]
+    environment:
+      AGROTRUST_ENV: development
+      AGROTRUST_DATABASE_URL: postgresql://agrotrust:agrotrust@db:5432/agrotrust
+      AGROTRUST_REDIS_URL: redis://redis:6379/0
+      AGROTRUST_JWT_SECRET: dev-only-change-me-to-a-real-secret-0123456789
+    depends_on:
+      - db
+      - redis
+
+volumes:
+  agrotrust_pgdata:

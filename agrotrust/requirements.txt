@@ -1,0 +1,27 @@
+# Runtime dependencies actually used by this build, pinned to the versions installed and
+# tested against in the sandbox this project was developed in (see docs/adr/README.md for why
+# this differs from the originally-specified stack).
+#
+# This file reflects the CURRENT (sandbox/Flask+SQLite) build. See requirements-production.txt
+# for the dependency set the originally-specified FastAPI+PostgreSQL+PostGIS+Redis stack would
+# use instead - migrating means swapping this file for that one, not adding to this one.
+
+Flask==3.1.3
+Werkzeug==3.1.7
+Jinja2==3.1.6
+itsdangerous==2.2.0
+click==8.3.1
+blinker==1.9.0
+
+PyJWT==2.7.0
+cryptography==46.0.6
+
+numpy==2.4.4
+pandas==3.0.2
+scikit-learn==1.8.0
+scipy==1.17.1
+joblib==1.5.3
+threadpoolctl==3.6.0
+
+PyYAML==6.0.3
+requests==2.33.1

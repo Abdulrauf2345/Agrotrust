@@ -1,0 +1,3219 @@
+{
+  "info": {
+    "name": "AgroTrust API",
+    "description": "Full HTTP surface of the AgroTrust platform (84+ routes). See postman/README.md in the project for setup instructions, required manual steps (role grants, crop seeding), and recommended run order. Folders are numbered in the order they should be run top-to-bottom for a coherent end-to-end walkthrough.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000"
+    }
+  ],
+  "item": [
+    {
+      "name": "00 - Health & Metrics",
+      "item": [
+        {
+          "name": "Health check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/healthz",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "healthz"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Prometheus metrics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/metrics",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "metrics"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "01 - Auth",
+      "item": [
+        {
+          "name": "Register Farmer (farmer)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/register",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "register"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"+2348011110001\",\n  \"password\": \"SecurePass123\",\n  \"full_name\": \"Farmer Joe\",\n  \"role\": \"FARMER\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login Farmer (farmer)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"+2348011110001\",\n  \"password\": \"SecurePass123\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.access_token !== undefined) pm.collectionVariables.set(\"farmer_access_token\", data.access_token);",
+                  "if (data.refresh_token !== undefined) pm.collectionVariables.set(\"farmer_refresh_token\", data.refresh_token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Register Buyer (buyer)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/register",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "register"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"+2348011110002\",\n  \"password\": \"SecurePass123\",\n  \"full_name\": \"Buyer Sue\",\n  \"role\": \"BUYER\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login Buyer (buyer)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"+2348011110002\",\n  \"password\": \"SecurePass123\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.access_token !== undefined) pm.collectionVariables.set(\"buyer_access_token\", data.access_token);",
+                  "if (data.refresh_token !== undefined) pm.collectionVariables.set(\"buyer_refresh_token\", data.refresh_token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Register Logistics_Provider (logi)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/register",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "register"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"+2348011110003\",\n  \"password\": \"SecurePass123\",\n  \"full_name\": \"FastHaul Rep\",\n  \"role\": \"LOGISTICS_PROVIDER\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login Logistics_Provider (logi)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"+2348011110003\",\n  \"password\": \"SecurePass123\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.access_token !== undefined) pm.collectionVariables.set(\"logi_access_token\", data.access_token);",
+                  "if (data.refresh_token !== undefined) pm.collectionVariables.set(\"logi_refresh_token\", data.refresh_token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Register Aggregator (agg)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/register",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "register"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"+2348011110004\",\n  \"password\": \"SecurePass123\",\n  \"full_name\": \"AggCo Rep\",\n  \"role\": \"AGGREGATOR\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login Aggregator (agg)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"+2348011110004\",\n  \"password\": \"SecurePass123\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.access_token !== undefined) pm.collectionVariables.set(\"agg_access_token\", data.access_token);",
+                  "if (data.refresh_token !== undefined) pm.collectionVariables.set(\"agg_refresh_token\", data.refresh_token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Register PLATFORM_ADMIN (manual role grant required)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/register",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "register"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"+2348011110099\",\n  \"password\": \"SecurePass123\",\n  \"full_name\": \"Admin User\",\n  \"role\": \"BUYER\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login admin (run AFTER granting PLATFORM_ADMIN - see README)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"+2348011110099\",\n  \"password\": \"SecurePass123\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.access_token !== undefined) pm.collectionVariables.set(\"admin_access_token\", data.access_token);",
+                  "if (data.refresh_token !== undefined) pm.collectionVariables.set(\"admin_refresh_token\", data.refresh_token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Register LENDER (manual role grant required)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/register",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "register"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"+2348011110005\",\n  \"password\": \"SecurePass123\",\n  \"full_name\": \"Lender Bank\",\n  \"role\": \"BUYER\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login lender (run AFTER granting LENDER role - see README)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"+2348011110005\",\n  \"password\": \"SecurePass123\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.access_token !== undefined) pm.collectionVariables.set(\"lender_access_token\", data.access_token);",
+                  "if (data.refresh_token !== undefined) pm.collectionVariables.set(\"lender_refresh_token\", data.refresh_token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Register FIELD_AGENT (manual role grant required)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/register",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "register"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"+2348011110006\",\n  \"password\": \"SecurePass123\",\n  \"full_name\": \"Agent Bola\",\n  \"role\": \"BUYER\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login agent (run AFTER granting FIELD_AGENT role - see README)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"+2348011110006\",\n  \"password\": \"SecurePass123\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.access_token !== undefined) pm.collectionVariables.set(\"agent_access_token\", data.access_token);",
+                  "if (data.refresh_token !== undefined) pm.collectionVariables.set(\"agent_refresh_token\", data.refresh_token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Refresh token (buyer)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/refresh",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "refresh"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refresh_token\": \"{{buyer_refresh_token}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.access_token !== undefined) pm.collectionVariables.set(\"buyer_access_token\", data.access_token);",
+                  "if (data.refresh_token !== undefined) pm.collectionVariables.set(\"buyer_refresh_token\", data.refresh_token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "My profile (me)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{farmer_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "me"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 - Organizations",
+      "item": [
+        {
+          "name": "Create lender organization",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{lender_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/organizations",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "organizations"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"AgroBank\",\n  \"type\": \"LENDER\",\n  \"state\": \"Oyo\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.lender_org_id !== undefined) pm.collectionVariables.set(\"lender_org_id\", data.lender_org_id);",
+                  "if (data.id !== undefined) pm.collectionVariables.set(\"id\", data.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create logistics organization",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{logi_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/organizations",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "organizations"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"FastHaul\",\n  \"type\": \"LOGISTICS\",\n  \"state\": \"Oyo\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.logi_org_id !== undefined) pm.collectionVariables.set(\"logi_org_id\", data.logi_org_id);",
+                  "if (data.id !== undefined) pm.collectionVariables.set(\"id\", data.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create aggregator organization",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{agg_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/organizations",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "organizations"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"AggCo\",\n  \"type\": \"AGGREGATOR\",\n  \"state\": \"Oyo\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.agg_org_id !== undefined) pm.collectionVariables.set(\"agg_org_id\", data.agg_org_id);",
+                  "if (data.id !== undefined) pm.collectionVariables.set(\"id\", data.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "My organizations",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{lender_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/organizations/mine",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "organizations",
+                "mine"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get organization",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{lender_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/organizations/{{lender_org_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "organizations",
+                "{{lender_org_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Add organization member",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{lender_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/organizations/{{lender_org_id}}/members",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "organizations",
+                "{{lender_org_id}}",
+                "members"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": \"<paste-a-user-id>\",\n  \"org_role\": \"STAFF\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "03 - Marketplace",
+      "item": [
+        {
+          "name": "Search listings (public)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/listings?q=maize",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "listings"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "maize"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create listing (farmer)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{farmer_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/listings",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "listings"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"crop_id\": \"<paste-crop-id-see-readme>\",\n  \"title\": \"Fresh Maize\",\n  \"quantity\": \"100\",\n  \"unit\": \"KG\",\n  \"price\": \"500\",\n  \"state\": \"Oyo\",\n  \"lga\": \"Ibadan\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.listing_id !== undefined) pm.collectionVariables.set(\"listing_id\", data.listing_id);",
+                  "if (data.id !== undefined) pm.collectionVariables.set(\"id\", data.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get listing by id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/listings/{{listing_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "listings",
+                "{{listing_id}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "04 - Orders & Escrow",
+      "item": [
+        {
+          "name": "Create order (buyer)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{buyer_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/orders",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "orders"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"listing_id\": \"{{listing_id}}\",\n  \"quantity\": \"10\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.order_id !== undefined) pm.collectionVariables.set(\"order_id\", data.order_id);",
+                  "if (data.id !== undefined) pm.collectionVariables.set(\"id\", data.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "List my orders (buyer)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{buyer_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/orders?role=buyer",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "orders"
+              ],
+              "query": [
+                {
+                  "key": "role",
+                  "value": "buyer"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get order",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{buyer_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/orders/{{order_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "orders",
+                "{{order_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Confirm order (farmer/seller)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{farmer_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/orders/{{order_id}}/confirm",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "orders",
+                "{{order_id}}",
+                "confirm"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Fund order (buyer - needs wallet balance, see Payments folder first)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{buyer_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/orders/{{order_id}}/fund",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "orders",
+                "{{order_id}}",
+                "fund"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Prepare order (farmer)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{farmer_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/orders/{{order_id}}/prepare",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "orders",
+                "{{order_id}}",
+                "prepare"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Dispatch order (farmer)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{farmer_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/orders/{{order_id}}/dispatch",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "orders",
+                "{{order_id}}",
+                "dispatch"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Mark delivery failed (farmer, optional branch)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{farmer_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/orders/{{order_id}}/delivery-failed",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "orders",
+                "{{order_id}}",
+                "delivery-failed"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"vehicle breakdown\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Mark delivered (farmer)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{farmer_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/orders/{{order_id}}/deliver",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "orders",
+                "{{order_id}}",
+                "deliver"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"delivered_quantity\": \"10\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Inspect order (buyer)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{buyer_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/orders/{{order_id}}/inspect",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "orders",
+                "{{order_id}}",
+                "inspect"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accepted_quantity\": \"10\",\n  \"quality_result\": \"good\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get escrow for order",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{buyer_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/orders/{{order_id}}/escrow",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "orders",
+                "{{order_id}}",
+                "escrow"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Release escrow (buyer, idempotent)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{buyer_access_token}}"
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "postman-release-key-0001"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/orders/{{order_id}}/release",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "orders",
+                "{{order_id}}",
+                "release"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Cancel order (optional branch - only before PREPARING)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{buyer_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/orders/{{order_id}}/cancel",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "orders",
+                "{{order_id}}",
+                "cancel"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"changed my mind\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Open dispute (optional branch)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{buyer_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/orders/{{order_id}}/disputes",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "orders",
+                "{{order_id}}",
+                "disputes"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"goods arrived damaged\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.dispute_id !== undefined) pm.collectionVariables.set(\"dispute_id\", data.dispute_id);",
+                  "if (data.id !== undefined) pm.collectionVariables.set(\"id\", data.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Resolve dispute (admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/disputes/{{dispute_id}}/resolve",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "disputes",
+                "{{dispute_id}}",
+                "resolve"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"seller_amount_minor\": 250000,\n  \"buyer_amount_minor\": 250000,\n  \"resolution\": \"50/50 split\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "05 - Payments",
+      "item": [
+        {
+          "name": "Create charge (buyer)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{buyer_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/payments/charges",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "payments",
+                "charges"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount_minor\": 500000\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.payment_reference !== undefined) pm.collectionVariables.set(\"payment_reference\", data.payment_reference);",
+                  "if (data.reference !== undefined) pm.collectionVariables.set(\"reference\", data.reference);",
+                  "const data = pm.response.json();",
+                  "if (data.payment_id !== undefined) pm.collectionVariables.set(\"payment_id\", data.payment_id);",
+                  "if (data.id !== undefined) pm.collectionVariables.set(\"id\", data.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get payment",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{buyer_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/payments/{{payment_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "payments",
+                "{{payment_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "[DEV] Simulate payment success",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/_dev/payments/simulate-success",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "_dev",
+                "payments",
+                "simulate-success"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reference\": \"{{payment_reference}}\"\n}"
+            }
+          }
+        },
+        {
+          "name": "[DEV] Get webhook signature for a body",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/_dev/payments/webhook-signature",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "_dev",
+                "payments",
+                "webhook-signature"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"event\": \"charge.success\", \"id\": \"evt-postman-0001\", \"data\": {\"reference\": \"{{payment_reference}}\"}}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.webhook_signature !== undefined) pm.collectionVariables.set(\"webhook_signature\", data.webhook_signature);",
+                  "if (data.signature !== undefined) pm.collectionVariables.set(\"signature\", data.signature);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Submit payment webhook (as the real gateway would)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/payments/webhook",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "payments",
+                "webhook"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"event\": \"charge.success\", \"id\": \"evt-postman-0001\", \"data\": {\"reference\": \"{{payment_reference}}\"}}"
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.request.headers.upsert({key: \"X-Signature\", value: pm.collectionVariables.get(\"webhook_signature\")});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Request payout (buyer)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{buyer_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/payments/payouts",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "payments",
+                "payouts"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount_minor\": 100000,\n  \"destination\": {\n    \"account_number\": \"0123456789\",\n    \"bank_code\": \"058\"\n  },\n  \"client_ref\": \"postman-payout-0001\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "06 - Farms",
+      "item": [
+        {
+          "name": "Create farm (farmer)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{farmer_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/farms",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "farms"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Green Valley Farm\",\n  \"state\": \"Oyo\",\n  \"lga\": \"Ibadan North\",\n  \"size_hectares\": 2.5,\n  \"lat\": 7.3775,\n  \"lon\": 3.947\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.farm_id !== undefined) pm.collectionVariables.set(\"farm_id\", data.farm_id);",
+                  "if (data.id !== undefined) pm.collectionVariables.set(\"id\", data.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "List my farms",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{farmer_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/farms",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "farms"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Farms nearby (public)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/farms/nearby?lat=7.3775&lon=3.947&radius_km=50",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "farms",
+                "nearby"
+              ],
+              "query": [
+                {
+                  "key": "lat",
+                  "value": "7.3775"
+                },
+                {
+                  "key": "lon",
+                  "value": "3.947"
+                },
+                {
+                  "key": "radius_km",
+                  "value": "50"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get farm",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{farmer_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/farms/{{farm_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "farms",
+                "{{farm_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Request verification (farmer)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{farmer_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/farms/{{farm_id}}/request-verification",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "farms",
+                "{{farm_id}}",
+                "request-verification"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Assign agent (admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/farms/{{farm_id}}/assign-agent",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "farms",
+                "{{farm_id}}",
+                "assign-agent"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"agent_id\": \"<paste-agent-user-id-see-readme>\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Record visit (field agent)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{agent_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/farms/{{farm_id}}/visits",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "farms",
+                "{{farm_id}}",
+                "visits"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lat\": 7.3775,\n  \"lon\": 3.947,\n  \"client_id\": \"postman-visit-0001\",\n  \"observations\": \"looks healthy\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Submit for review (field agent)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{agent_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/farms/{{farm_id}}/submit",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "farms",
+                "{{farm_id}}",
+                "submit"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Verify farm (admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/farms/{{farm_id}}/verify",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "farms",
+                "{{farm_id}}",
+                "verify"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"notes\": \"boundary matches visit location\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Reject farm (alternate branch)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/farms/{{farm_id}}/reject",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "farms",
+                "{{farm_id}}",
+                "reject"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"boundary does not match visit\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Yield prediction (ML)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{farmer_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/farms/{{farm_id}}/yield-prediction",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "farms",
+                "{{farm_id}}",
+                "yield-prediction"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "07 - Traceability & Inventory",
+      "item": [
+        {
+          "name": "Create lot (farmer)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{farmer_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/lots",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "lots"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"farm_id\": \"{{farm_id}}\",\n  \"crop_id\": \"<paste-crop-id-see-readme>\",\n  \"quantity\": \"500\",\n  \"unit\": \"KG\",\n  \"harvest_date\": \"2026-06-01\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.lot_id !== undefined) pm.collectionVariables.set(\"lot_id\", data.lot_id);",
+                  "if (data.id !== undefined) pm.collectionVariables.set(\"id\", data.id);",
+                  "const data = pm.response.json();",
+                  "if (data.lot_code !== undefined) pm.collectionVariables.set(\"lot_code\", data.lot_code);",
+                  "if (data.code !== undefined) pm.collectionVariables.set(\"code\", data.code);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get lot",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/lots/{{lot_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "lots",
+                "{{lot_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get lot by code",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/lots/by-code/{{lot_code}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "lots",
+                "by-code",
+                "{{lot_code}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Lot custody history + chain verification",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/lots/{{lot_id}}/history",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "lots",
+                "{{lot_id}}",
+                "history"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Record weighing",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{farmer_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/lots/{{lot_id}}/weighing",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "lots",
+                "{{lot_id}}",
+                "weighing"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"gross_kg\": 520,\n  \"tare_kg\": 20\n}"
+            }
+          }
+        },
+        {
+          "name": "Record quality inspection",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{farmer_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/lots/{{lot_id}}/inspection",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "lots",
+                "{{lot_id}}",
+                "inspection"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"grade\": \"A\",\n  \"passed\": true,\n  \"moisture_pct\": 12.5\n}"
+            }
+          }
+        },
+        {
+          "name": "Create warehouse (aggregator)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{agg_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/warehouses",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "warehouses"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"org_id\": \"{{agg_org_id}}\",\n  \"name\": \"Central Warehouse\",\n  \"state\": \"Oyo\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.warehouse_id !== undefined) pm.collectionVariables.set(\"warehouse_id\", data.warehouse_id);",
+                  "if (data.id !== undefined) pm.collectionVariables.set(\"id\", data.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Record inventory movement (receipt)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{agg_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/inventory/movements",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "inventory",
+                "movements"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"warehouse_id\": \"{{warehouse_id}}\",\n  \"lot_id\": \"{{lot_id}}\",\n  \"movement_type\": \"RECEIPT\",\n  \"qty_delta\": \"500\",\n  \"reason\": \"initial receipt from farm\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "08 - Logistics",
+      "item": [
+        {
+          "name": "Register vehicle",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{logi_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/vehicles",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "vehicles"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"org_id\": \"{{logi_org_id}}\",\n  \"plate\": \"XYZ999AA\",\n  \"vehicle_type\": \"TRUCK\",\n  \"capacity_kg\": 2000\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.vehicle_id !== undefined) pm.collectionVariables.set(\"vehicle_id\", data.vehicle_id);",
+                  "if (data.id !== undefined) pm.collectionVariables.set(\"id\", data.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Register driver",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{logi_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/drivers",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "drivers"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"org_id\": \"{{logi_org_id}}\",\n  \"name\": \"Driver Dayo\",\n  \"phone\": \"+2348080000000\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.driver_id !== undefined) pm.collectionVariables.set(\"driver_id\", data.driver_id);",
+                  "if (data.id !== undefined) pm.collectionVariables.set(\"id\", data.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Request shipment (buyer)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{buyer_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/shipments",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "shipments"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"order_id\": \"{{order_id}}\",\n  \"pickup_lat\": 7.3775,\n  \"pickup_lon\": 3.947,\n  \"dropoff_lat\": 6.5244,\n  \"dropoff_lon\": 3.3792\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.shipment_id !== undefined) pm.collectionVariables.set(\"shipment_id\", data.shipment_id);",
+                  "if (data.id !== undefined) pm.collectionVariables.set(\"id\", data.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Assign shipment (logistics provider)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{logi_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/shipments/{{shipment_id}}/assign",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "shipments",
+                "{{shipment_id}}",
+                "assign"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"driver_id\": \"{{driver_id}}\",\n  \"vehicle_id\": \"{{vehicle_id}}\",\n  \"provider_org_id\": \"{{logi_org_id}}\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Mark picked up",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{logi_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/shipments/{{shipment_id}}/picked-up",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "shipments",
+                "{{shipment_id}}",
+                "picked-up"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lat\": 7.3775,\n  \"lon\": 3.947\n}"
+            }
+          }
+        },
+        {
+          "name": "Mark in transit",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{logi_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/shipments/{{shipment_id}}/in-transit",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "shipments",
+                "{{shipment_id}}",
+                "in-transit"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Mark delivered",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{logi_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/shipments/{{shipment_id}}/delivered",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "shipments",
+                "{{shipment_id}}",
+                "delivered"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lat\": 6.5244,\n  \"lon\": 3.3792\n}"
+            }
+          }
+        },
+        {
+          "name": "Confirm receipt (buyer)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{buyer_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/shipments/{{shipment_id}}/confirm",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "shipments",
+                "{{shipment_id}}",
+                "confirm"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Track shipment",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{buyer_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/shipments/{{shipment_id}}/track",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "shipments",
+                "{{shipment_id}}",
+                "track"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "09 - Lending",
+      "item": [
+        {
+          "name": "Create loan product (lender)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{lender_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/loan-products",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "loan-products"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lender_org_id\": \"{{lender_org_id}}\",\n  \"name\": \"Seed Loan\",\n  \"min_amount_minor\": 1000000,\n  \"max_amount_minor\": 50000000,\n  \"min_term_months\": 3,\n  \"max_term_months\": 12,\n  \"annual_rate_bps\": 1800,\n  \"late_fee_bps\": 200,\n  \"min_credit_score\": 0,\n  \"requires_verified_farm\": false\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.loan_product_id !== undefined) pm.collectionVariables.set(\"loan_product_id\", data.loan_product_id);",
+                  "if (data.id !== undefined) pm.collectionVariables.set(\"id\", data.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Apply for loan (farmer)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{farmer_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/loan-applications",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "loan-applications"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"product_id\": \"{{loan_product_id}}\",\n  \"amount_minor\": 10000000,\n  \"term_months\": 6\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.loan_application_id !== undefined) pm.collectionVariables.set(\"loan_application_id\", data.loan_application_id);",
+                  "if (data.id !== undefined) pm.collectionVariables.set(\"id\", data.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "My credit assessment",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{farmer_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/credit/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "credit",
+                "me"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Decide application - approve (lender)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{lender_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/loan-applications/{{loan_application_id}}/decide",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "loan-applications",
+                "{{loan_application_id}}",
+                "decide"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"approve\": true,\n  \"reason\": \"good applicant profile\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Disburse loan (lender, idempotent)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{lender_access_token}}"
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "postman-disburse-key-0001"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/loan-applications/{{loan_application_id}}/disburse",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "loan-applications",
+                "{{loan_application_id}}",
+                "disburse"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.loan_id !== undefined) pm.collectionVariables.set(\"loan_id\", data.loan_id);",
+                  "if (data.id !== undefined) pm.collectionVariables.set(\"id\", data.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get loan",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{farmer_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/loans/{{loan_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "loans",
+                "{{loan_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get repayment schedule",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{farmer_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/loans/{{loan_id}}/schedule",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "loans",
+                "{{loan_id}}",
+                "schedule"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Repay loan installment (farmer, idempotent)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{farmer_access_token}}"
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "postman-repay-key-0001"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/loans/{{loan_id}}/repay",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "loans",
+                "{{loan_id}}",
+                "repay"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount_minor\": 1800000\n}"
+            }
+          }
+        },
+        {
+          "name": "Lender portfolio analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{lender_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/analytics/lenders/{{lender_org_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "analytics",
+                "lenders",
+                "{{lender_org_id}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "10 - Insurance",
+      "item": [
+        {
+          "name": "Buy weather insurance policy (farmer)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{farmer_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/insurance/policies",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "insurance",
+                "policies"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"farm_id\": \"{{farm_id}}\",\n  \"coverage_minor\": 10000000,\n  \"premium_minor\": 100000,\n  \"trigger_metric\": \"rainfall_mm_total\",\n  \"comparator\": \"below\",\n  \"threshold\": 50.0,\n  \"window_start\": \"2020-01-01\",\n  \"window_end\": \"2020-01-31\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.policy_id !== undefined) pm.collectionVariables.set(\"policy_id\", data.policy_id);",
+                  "if (data.id !== undefined) pm.collectionVariables.set(\"id\", data.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Pay premium (farmer)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{farmer_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/insurance/policies/{{policy_id}}/pay-premium",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "insurance",
+                "policies",
+                "{{policy_id}}",
+                "pay-premium"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get policy",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{farmer_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/insurance/policies/{{policy_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "insurance",
+                "policies",
+                "{{policy_id}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "11 - Offline Sync",
+      "item": [
+        {
+          "name": "Sync batch (field agent)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{agent_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/sync/batch",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "sync",
+                "batch"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"device_id\": \"postman-device-1\",\n  \"operations\": []\n}"
+            }
+          }
+        },
+        {
+          "name": "Sync status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{agent_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/sync/status?device_id=postman-device-1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "sync",
+                "status"
+              ],
+              "query": [
+                {
+                  "key": "device_id",
+                  "value": "postman-device-1"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "12 - Notifications",
+      "item": [
+        {
+          "name": "My notifications inbox",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{farmer_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/notifications",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "notifications"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Mark notification read",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{farmer_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/notifications/{{notification_id}}/read",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "notifications",
+                "{{notification_id}}",
+                "read"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "13 - Admin",
+      "item": [
+        {
+          "name": "List users (admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/users?limit=50&offset=0",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "50"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "User detail (admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/users/{{farmer_user_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "users",
+                "{{farmer_user_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Audit trail (admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/admin/audit?limit=100",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "audit"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "100"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "14 - Analytics",
+      "item": [
+        {
+          "name": "My farmer dashboard",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{farmer_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/analytics/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "analytics",
+                "me"
+              ]
+            }
+          }
+        },
+        {
+          "name": "My buyer dashboard",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{buyer_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/analytics/buyer",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "analytics",
+                "buyer"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Platform overview (admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/analytics/platform",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "analytics",
+                "platform"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Ops queue depths (admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/analytics/ops",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "analytics",
+                "ops"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

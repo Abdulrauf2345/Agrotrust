@@ -1,0 +1,41 @@
+# Dependency set for the ORIGINALLY-SPECIFIED production stack (FastAPI + Pydantic v2 +
+# SQLAlchemy 2.x + PostgreSQL/PostGIS + Redis + ARQ), per the AgroTrust Master Development
+# Prompt. NOT installed or used anywhere in this build - the sandbox this project was
+# developed in has no network access to install any of these (see docs/adr/README.md).
+#
+# Migrating from the current build to this stack means: replace requirements.txt with this
+# file, apply migrations/postgres_extras.sql, and follow the "Consequences" section of each
+# relevant ADR (ADR-002 through ADR-005) for what changes in each module. The application's
+# business-logic modules (modules/*/service.py) are designed not to need changes.
+
+fastapi==0.115.6
+pydantic==2.10.4
+pydantic-settings==2.7.0
+uvicorn[standard]==0.34.0
+starlette==0.41.3
+
+sqlalchemy==2.0.36
+alembic==1.14.0
+psycopg[binary]==3.2.3
+geoalchemy2==0.16.0
+shapely==2.0.6
+
+redis==5.2.1
+arq==0.26.1
+
+PyJWT==2.7.0
+cryptography==46.0.6
+passlib[argon2]==1.7.4
+
+numpy==2.4.4
+pandas==3.0.2
+scikit-learn==1.8.0
+
+httpx==0.28.1          # outbound calls to Paystack/Flutterwave/KYC/SMS providers
+sentry-sdk==2.19.2
+opentelemetry-sdk==1.29.0
+opentelemetry-instrumentation-fastapi==0.50b0
+prometheus-client==0.21.1
+
+python-multipart==0.0.20   # file upload parsing
+boto3==1.35.90             # S3-compatible object storage

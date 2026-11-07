@@ -1,0 +1,55 @@
+# CI pipeline for the production target. NOT run by any CI runner in the sandbox this project
+# was developed in (no network, no GitHub Actions runner available there) - authored against
+# documented GitHub Actions syntax, not validated with a real workflow run.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgis/postgis:15-3.4
+        env:
+          POSTGRES_USER: agrotrust
+          POSTGRES_PASSWORD: agrotrust
+          POSTGRES_DB: agrotrust_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+      redis:
+        image: redis:7-alpine
+        ports: ["6379:6379"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: pip install -r requirements-production.txt -r requirements-dev.txt
+      - name: Lint
+        run: ruff check src/ tests/
+      - name: Type check
+        run: mypy src/
+      - name: Run tests
+        env:
+          AGROTRUST_ENV: testing
+          AGROTRUST_DATABASE_URL: postgresql://agrotrust:agrotrust@localhost:5432/agrotrust_test
+          AGROTRUST_REDIS_URL: redis://localhost:6379/0
+          AGROTRUST_JWT_SECRET: ci-test-secret-not-for-production-use-0123456789
+        run: pytest tests/ -v --cov=agrotrust --cov-report=term-missing
+
+  build:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Docker image
+        run: docker build -f docker/Dockerfile -t agrotrust:${{ github.sha }} .

@@ -1,0 +1,11 @@
+# Development/test tooling. NOTE: none of these (pytest, ruff, mypy) are installed in the
+# sandbox this project was developed in - the test suite was run with stdlib `unittest`
+# (pytest-discoverable: every test file/class/method follows unittest conventions and pytest
+# can collect and run them unmodified once installed). Install this file in a normal
+# development environment with network access.
+-r requirements.txt
+
+pytest==8.3.4
+pytest-cov==6.0.0
+ruff==0.8.4
+mypy==1.13.0
